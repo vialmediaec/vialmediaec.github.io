@@ -3,11 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vialmedia · Agencia de publicidad · Regalos corporativos con tu logo</title>
-<meta name="description" content="Vialmedia, agencia de publicidad: regalos corporativos con tu logo, stands para ferias y pantallas LED. Desde 12 kits, muestra digital y envíos a todo Ecuador.">
+<meta name="description" content="Vialmedia, agencia de publicidad: regalos corporativos con tu logo, stands para ferias y pantallas LED. Desde 5 unidades, muestra digital y envíos a todo Ecuador.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vialmedia">
 <meta property="og:title" content="Vialmedia · Agencia de publicidad · Regalos corporativos con tu logo">
-<meta property="og:description" content="Kits, termos y libretas con el logo de tu empresa. Desde 12 kits, muestra digital y envíos a todo Ecuador. Cotiza por WhatsApp.">
+<meta property="og:description" content="Kits, termos y libretas con el logo de tu empresa. Desde 5 unidades, muestra digital y envíos a todo Ecuador. Cotiza por WhatsApp.">
 <meta property="og:url" content="https://vialmediaec.github.io/">
 <meta property="og:image" content="https://vialmediaec.github.io/img/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -243,7 +243,7 @@ body.concarro main{padding-bottom:72px}
   <button class="btn cartbtn" id="open" aria-haspopup="dialog">Mi cotización <span class="badge" id="cnt">0</span></button>
 </div></header>
 
-<div class="strip">🎁 <b>Desde 12 kits</b> · Muestra digital · Envíos a todo Ecuador · <a href="trabajos/">¿Stands para ferias? Ver trabajos →</a></div>
+<div class="strip">🏷️ <b>Precios de mayorista</b> · Más unidades, menos precio · Entrega en 1 día · <a href="trabajos/">¿Stands para ferias? Ver trabajos →</a></div>
 <main class="wrap">
   <section class="intro">
     <h1>Regalos corporativos con el logo de tu empresa</h1>
@@ -267,7 +267,7 @@ body.concarro main{padding-bottom:72px}
 
   <footer>
     <div><b style="color:var(--ink)">Vialmedia</b> · Agencia de publicidad · Regalos corporativos a precio de mayorista · Catálogo Navidad 2026</div>
-    <div>Precios de mayorista por unidad, más IVA. Desde 12 kits, con muestra digital y envíos a todo Ecuador. La personalización con logo se confirma en la cotización.</div>
+    <div>Precios de mayorista por unidad, más IVA. Entrega en 1 día. La personalización con logo se confirma en la cotización.</div>
   </footer>
 </main>
 
@@ -318,7 +318,9 @@ const MIN=1;      // se puede elegir desde 1 para ver precios
 const PEDIDO_MIN=5; // pedido mínimo real por producto (solo se avisa en Mi cotización)
 const money=v=>"$"+v.toFixed(2).replace(".",",");
 /* precio que se ve: total de la cantidad elegida (1 u. = precio unitario) */
-const precio=(p,q)=>{q=Math.max(MIN,parseInt(q)||MIN);return `${money(p.p*q)} <small>+ IVA</small>`};
+const factor=q=>q>=50?0.88:q>=12?0.92:q>=5?0.96:1; // precio por volumen: 5+ u. -4 %, 12+ u. -8 %, 50+ u. -12 %
+const unit=(p,q)=>Math.round(p.p*factor(q)*100)/100;
+const precio=(p,q)=>{q=Math.max(MIN,parseInt(q)||MIN);const f=factor(q);return `${money(unit(p,q)*q)} <small>+ IVA${f<1?` · ${money(unit(p,q))} c/u (precio por volumen)`:""}</small>`};
 const pintar=(id,q)=>{const e=document.getElementById("pr"+id);if(e)e.innerHTML=precio(byId(id),q)};
 const pintarFicha=q=>{const k=location.hash.match(/^#p-(\d+)$/);const f=document.getElementById("fpr");if(k&&f)f.innerHTML=precio(byId(k[1]),q)};
 const $=s=>document.querySelector(s);
@@ -365,7 +367,7 @@ function renderGrid(){
   </article>`).join(""):`<div class="empty">No hay productos con esa búsqueda.</div>`;
 }
 function totals(){
-  let sub=0,n=0;for(const id in cart){const p=byId(id);if(p){sub+=p.p*cart[id];n++}}
+  let sub=0,n=0;for(const id in cart){const p=byId(id);if(p){sub+=unit(p,cart[id])*cart[id];n++}}
   return{sub,iva:sub*IVA,tot:sub*(1+IVA),n};
 }
 function renderCart(){
@@ -373,7 +375,7 @@ function renderCart(){
   const b=$("#cbar");if(b){b.hidden=!t.n;document.body.classList.toggle("concarro",!!t.n);$("#cbt").innerHTML=t.n?`${t.n} producto${t.n>1?"s":""} · <b>${money(t.sub)}</b> + IVA`:""}
   const ids=Object.keys(cart);
   $("#lines").innerHTML=ids.length?ids.map(id=>{const p=byId(id);return`
-  <div class="line"><img src="${p.img}" alt=""><div class="nm">${p.n}<div class="sub">${cart[id]} × ${money(p.p)} = ${money(cart[id]*p.p)}</div>${cart[id]<PEDIDO_MIN?`<div class="minu">Mínimo ${PEDIDO_MIN} unidades</div>`:""}<button class="rm" data-rm="${id}">Quitar</button></div>
+  <div class="line"><img src="${p.img}" alt=""><div class="nm">${p.n}<div class="sub">${cart[id]} × ${money(unit(p,cart[id]))} = ${money(cart[id]*unit(p,cart[id]))}</div>${cart[id]<PEDIDO_MIN?`<div class="minu">Mínimo ${PEDIDO_MIN} unidades</div>`:""}<button class="rm" data-rm="${id}">Quitar</button></div>
   <div class="qty"><button type="button" data-cstep="-1" data-id="${id}" aria-label="Menos">−</button><input type="number" min="1" value="${cart[id]}" data-cq="${id}" aria-label="Cantidad de ${p.n}"><button type="button" data-cstep="1" data-id="${id}" aria-label="Más">+</button></div></div>`}).join(""):`<p class="empty">Aún no agregas productos. Elige del catálogo y pulsa Cotizar.</p>`;
   $("#tot").innerHTML=ids.length?`<div><span>Subtotal</span><span>${money(t.sub)}</span></div><div><span>IVA ${Math.round(IVA*100)}%</span><span>${money(t.iva)}</span></div><div class="g"><span>Total referencial</span><span>${money(t.tot)}</span></div>`:"";
   $("#ivanote").textContent=ids.length?(ids.some(id=>cart[id]<PEDIDO_MIN)?`Pedido mínimo: ${PEDIDO_MIN} unidades por producto. `:"")+"Valor referencial. Entrega en 1 día. No incluye envío fuera de Loja.":"";
@@ -383,7 +385,7 @@ function setQty(id,v){v=Math.max(MIN,parseInt(v)||MIN);cart[id]=v;save();renderC
 function msg(){
   const t=totals(),f=new FormData($("#f"));
   let s="Hola, quiero una cotización de Vialmedia:\n\n";
-  for(const id in cart){const p=byId(id);s+=`• ${p.n} — ${cart[id]} u. × ${money(p.p)} + IVA\n`}
+  for(const id in cart){const p=byId(id);s+=`• ${p.n} — ${cart[id]} u. × ${money(unit(p,cart[id]))} + IVA\n`}
   s+=`\nSubtotal: ${money(t.sub)} + IVA (${money(t.tot)} con IVA ${Math.round(IVA*100)}%)\n\n`;
   s+=`Nombre: ${f.get("nombre")}\n`;
   if(f.get("empresa"))s+=`Empresa: ${f.get("empresa")}\n`;
@@ -461,7 +463,7 @@ function renderFicha(){
             <div class="tl-k">Arrastra el logo para moverlo. Usa ↻ para girarlo y ✕ para quitarlo.</div>
           </div>
         </div>
-        <ul class="fpts"><li>Con el logo de tu empresa</li><li>Precio de mayorista, sin intermediarios</li><li>Desde 12 kits, con muestra digital</li><li>Envíos a todo Ecuador</li><li>Cotización sin compromiso por WhatsApp</li></ul>
+        <ul class="fpts"><li>Con el logo de tu empresa</li><li>Precio de mayorista, sin intermediarios</li><li>Entrega en 1 día</li><li>Cotización sin compromiso por WhatsApp</li></ul>
       </div>
     </div>
     ${rel.length?`<div class="frel"><h2>Más en ${p.c}</h2><div class="grid">${rel.map(cardHTML).join("")}</div></div>`:""}
