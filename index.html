@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -242,6 +242,56 @@ body.concarro main{padding-bottom:72px}
   <a class="btn wahead" id="wahead" href="https://wa.me/593982898560" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4a10.4 10.4 0 0 1-1.6-5.6C5.4 9.8 10.2 5.1 16 5.1s10.6 4.7 10.6 10.5S21.8 26.1 16 26.1z"/></svg><span>WhatsApp</span></a>
   <button class="btn cartbtn" id="open" aria-haspopup="dialog">Mi cotización <span class="badge" id="cnt">0</span></button>
 </div></header>
+
+<!-- 24-nov-2026: experiencia 3D del set de corcho (aprobada por Ramiro). Estilos aislados bajo #exp3d. Script: assets/c4.js (three.js). -->
+<style>
+#exp3d{position:relative;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));--ink:#202125;--muted:#6a6b71;--line:#DAD6CE;--gold:#DFC76F;--accent:#FFED00;background:#F4F2EE;color:var(--ink)}
+#exp3d .escenario{position:relative;height:420vh}
+#exp3d .fijo{position:sticky;top:64px;height:calc(100vh - 64px);overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center;max-width:1240px;margin:0 auto;padding:0 24px}
+#exp3d #fondo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+#exp3d .textos{position:relative;height:420px;z-index:3}
+#exp3d .paso{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+#exp3d .paso.on{opacity:1;transform:none;pointer-events:auto}
+#exp3d .num{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+#exp3d .num i{width:22px;height:2px;background:var(--gold)}
+#exp3d h2.t{font-weight:600;letter-spacing:-.03em;line-height:1.04;margin-top:16px;font-size:clamp(40px,5vw,76px)}
+#exp3d .paso .w{display:inline-block;opacity:0;transform:translateY(.45em);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)}
+#exp3d .paso.on .w{opacity:1;transform:none}
+#exp3d .big{font-size:clamp(70px,9vw,140px);font-weight:600;letter-spacing:-.05em;line-height:.9}
+#exp3d .big small{font-size:.32em;letter-spacing:-.01em;color:var(--muted);font-weight:500;margin-left:.2em}
+#exp3d .paso p{margin-top:18px;font-size:clamp(17px,1.5vw,21px);color:var(--muted);max-width:440px}
+#exp3d .ficha{margin-top:22px;display:flex;gap:26px}#exp3d .ficha div{font-size:13px;color:var(--muted)}#exp3d .ficha b{display:block;color:var(--ink);font-size:20px;font-weight:700}
+#exp3d .acc{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+#exp3d .b1{background:var(--ink);color:#fff;padding:15px 24px;border-radius:10px;font-weight:600;text-decoration:none}
+#exp3d .b2{background:#fff;border:1px solid var(--line);padding:15px 22px;border-radius:10px;font-weight:600;color:var(--ink);text-decoration:none}
+#exp3d .escena{position:relative;width:100%;height:100%;cursor:grab;touch-action:pan-y;opacity:0;transition:opacity 1.2s ease;z-index:2}
+#exp3d .escena.listo{opacity:1}#exp3d .escena:active{cursor:grabbing}
+#exp3d .escena canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#exp3d .pista{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);background:rgba(255,255,255,.7);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);transition:opacity .5s;white-space:nowrap}
+#exp3d .puntos{position:absolute;left:24px;bottom:30px;display:flex;gap:8px;z-index:3}
+#exp3d .puntos span{width:26px;height:3px;border-radius:2px;background:#20212522;overflow:hidden;position:relative}
+#exp3d .puntos span b{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(0)}
+@media (max-width:880px){#exp3d .fijo{grid-template-columns:1fr;grid-template-rows:36vh 1fr;align-content:stretch;padding:8px 18px 28px}
+ #exp3d .textos{height:36vh}#exp3d h2.t{font-size:34px}#exp3d .big{font-size:72px}#exp3d .paso p{font-size:16px;margin-top:10px}#exp3d .puntos{bottom:12px}}
+</style>
+<section id="exp3d" aria-label="Destacado: set ejecutivo de corcho en 3D">
+ <div class="escenario" id="escenario"><div class="fijo">
+  <canvas id="fondo"></canvas>
+  <div class="textos">
+   <div class="paso on"><span class="num"><i></i>Destacado</span><h2 class="t">Set ejecutivo de corcho, con tu logo.</h2>
+    <p>Libreta, bolígrafo y llavero de corcho en caja kraft.</p>
+    <div class="ficha"><div><b id="pr"></b>por unidad</div><div><b>17,5 cm</b>caja cuadrada</div><div><b>24 h</b>entrega en Loja</div></div></div>
+   <div class="paso"><span class="num"><i></i>01 · Grabado</span><h2 class="t">Tu marca grabada, no impresa.</h2><p>Grabamos tu logo en la tapa de corcho. No se borra ni se despega.</p></div>
+   <div class="paso"><span class="num"><i></i>02 · Para tu equipo</span><div class="big">5<small>unidades mínimo</small></div><h2 class="t" style="font-size:clamp(28px,3vw,44px)">Uno para cada cliente.</h2><p>Ideal para clientes, eventos, aniversarios y equipos de trabajo.</p></div>
+   <div class="paso"><span class="num"><i></i>03 · Listo para regalar</span><h2 class="t">Llega listo para entregar.</h2><p>En su caja kraft con espuma negra, en 24 horas.</p>
+    <div class="acc"><a class="b1" id="wa2" target="_blank" rel="noopener">Cotizar este kit</a><a class="b2" href="#catalogo">Ver 170+ productos</a></div></div>
+  </div>
+  <div class="escena" id="escena" aria-label="Set ejecutivo de corcho en 3D"><canvas id="gl"></canvas><div class="pista" id="pista">Desliza hacia abajo · arrástralo para girarlo en 360°</div></div>
+  <div class="puntos" id="puntos"><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span></div>
+ </div></div>
+</section>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module" src="assets/c4.js"></script>
 
 <div class="strip">🏷️ <b>Precios de mayorista</b> · Más unidades, menos precio · Entrega en 1 día · <a href="trabajos/">¿Stands para ferias? Ver trabajos →</a></div>
 <main class="wrap">
