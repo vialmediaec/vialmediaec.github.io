@@ -1,0 +1,100 @@
+﻿<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Set ejecutivo de corcho con tu logo — Vialmedia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Paleta de la tienda actual: fondo hueso, barra grafito con línea dorada, acento amarillo */
+:root{--bg:#F4F2EE;--surface:#fff;--ink:#202125;--muted:#6a6b71;--line:#DAD6CE;--accent:#FFED00;--gold:#DFC76F;--brand:#202125}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--ink);font-family:'Schibsted Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+header{position:fixed;top:0;left:0;right:0;z-index:30;background:var(--brand);border-bottom:2px solid var(--gold)}
+.bar{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:12px 24px}
+.bar img{height:40px}.bar .sp{flex:1}
+.bar a.l,.bar a.c{font-family:"Instrument Sans",sans-serif;letter-spacing:.01em}.bar a.l{color:#e9e9e6;font-weight:500;padding:8px 12px;border-radius:8px;font-size:15px}.bar a.l:hover{background:#ffffff14}
+.bar a.c{background:var(--accent);color:var(--ink);font-weight:600;padding:10px 18px;border-radius:999px;font-size:15px}
+
+/* Fondo vivo y sutil: luz cálida que sigue al mouse + partículas de corcho + grano */
+#fondo{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.grano{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* Escenario con scroll: 4 pasos mientras el set gira y se acerca */
+.escenario{position:relative;z-index:2;height:420vh}
+.fijo{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center;max-width:1240px;margin:0 auto;padding:66px 24px 0}
+.textos{position:relative;height:420px;z-index:3}
+.paso{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.paso.on{opacity:1;transform:none}
+.num{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.num i{width:22px;height:2px;background:var(--gold)}
+h1,h2{font-weight:600;letter-spacing:-.03em;line-height:1.04;margin-top:16px}
+h1,h2{font-size:clamp(40px,5vw,76px)}
+.paso .w{display:inline-block;opacity:0;transform:translateY(.45em);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)}
+.paso.on .w{opacity:1;transform:none}
+.big{font-size:clamp(70px,9vw,140px);font-weight:600;letter-spacing:-.05em;line-height:.9;color:var(--ink)}
+.big small{font-size:.32em;letter-spacing:-.01em;color:var(--muted);font-weight:500;margin-left:.2em}
+.paso p{margin-top:18px;font-size:clamp(17px,1.5vw,21px);color:var(--muted);max-width:420px}
+.ficha{margin-top:22px;display:flex;gap:26px}.ficha div{font-size:13px;color:var(--muted)}.ficha b{display:block;color:var(--ink);font-size:20px;font-weight:700}
+.acc{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+.b1{background:var(--ink);color:#fff;padding:15px 24px;border-radius:10px;font-weight:600}
+.b2{background:var(--surface);border:1px solid var(--line);padding:15px 22px;border-radius:10px;font-weight:600}
+.puntos{position:absolute;left:24px;bottom:34px;display:flex;gap:8px}
+.puntos span{width:26px;height:3px;border-radius:2px;background:#20212522;overflow:hidden;position:relative}
+.puntos span b{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(0)}
+
+.escena{opacity:0;transition:opacity 1.2s ease;position:relative;width:100%;height:calc(100vh - 66px);justify-self:center;cursor:grab;touch-action:pan-y;will-change:transform}
+.escena:active{cursor:grabbing}
+.escena canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pista{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);background:rgba(255,255,255,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);transition:opacity .5s;white-space:nowrap}
+
+.catalogo{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:40px 24px 90px}
+.catalogo h2{margin:0}
+.chips{display:flex;gap:8px;overflow:auto;padding:22px 0}
+.chips span{white-space:nowrap;padding:9px 15px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500;font-size:14px}
+.chips span:first-child{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:30px 20px}
+.card .f{aspect-ratio:1;border-radius:14px;overflow:hidden;background:#fff}
+.card img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}.card:hover img{transform:scale(1.04)}
+.card .n{margin-top:12px;font-weight:600}.card .c{color:var(--muted);font-size:14px}.card .p{margin-top:4px;font-weight:700}.card .p small{color:var(--muted);font-weight:500}
+footer{position:relative;z-index:2;background:var(--brand);color:#cfcfcf;border-top:2px solid var(--gold);padding:40px 24px;text-align:center;font-size:14px}
+@media (max-width:880px){.fijo{grid-template-columns:1fr;grid-template-rows:1fr auto;padding-top:80px}.escena{order:2;max-height:none;width:100%;height:100%;min-height:0;justify-self:stretch}.textos{order:1;height:36vh;margin-top:4px}h1,h2{font-size:34px}.big{font-size:72px}.paso p{font-size:16px;margin-top:10px}.fijo{grid-template-rows:36vh 1fr;align-content:stretch;padding-bottom:28px}.puntos{bottom:12px}.bar{padding:10px 16px}.bar img{height:32px}.bar a.c{font-size:0;padding:10px 16px}.bar a.c::after{content:"Cotizar";font-size:14px}.pista{bottom:2%}.textos{height:250px}.bar a.l{display:none}}
+.escena.listo{opacity:1}</style></head>
+<body>
+<canvas id="fondo"></canvas><div class="grano"></div>
+<header><div class="bar"><img src="assets/logo.png" alt="Vialmedia"><span class="sp"></span><a class="l" href="../">Tienda</a><a class="l" href="../trabajos/">Trabajos</a><a class="c" id="wa1">Cotizar por WhatsApp</a></div></header>
+
+<section class="escenario" id="escenario">
+  <div class="fijo">
+    <div class="textos">
+      <div class="paso on"><span class="num"><i></i>Destacado</span><h1>Set ejecutivo de corcho, con tu logo.</h1>
+        <p>Libreta, bolígrafo y llavero de corcho en caja kraft.</p>
+        <div class="ficha"><div><b id="pr"></b>por unidad</div><div><b>17,5 cm</b>caja cuadrada</div><div><b>24 h</b>entrega en Loja</div></div></div>
+      <div class="paso"><span class="num"><i></i>01 · Grabado</span><h2>Tu marca grabada, no impresa.</h2><p>Grabamos tu logo en la tapa de corcho. No se borra ni se despega.</p></div>
+      <div class="paso"><span class="num"><i></i>02 · Para tu equipo</span><div class="big">5<small>unidades mínimo</small></div><h2 style="font-size:clamp(28px,3vw,44px)">Uno para cada cliente.</h2><p>Ideal para clientes, eventos, aniversarios y equipos de trabajo.</p></div>
+      <div class="paso"><span class="num"><i></i>03 · Listo para regalar</span><h2>Llega listo para entregar.</h2><p>En su caja kraft con espuma negra, en 24 horas.</p>
+        <div class="acc"><a class="b1" id="wa2">Cotizar este kit</a><a class="b2" href="#productos">Ver 170+ productos</a></div></div>
+    </div>
+    <div class="escena" id="escena" aria-label="Set ejecutivo de corcho en 3D">
+      <canvas id="gl"></canvas>
+      <div class="pista" id="pista">Desliza hacia abajo · arrástralo para girarlo en 360°</div>
+    </div>
+    <div class="puntos" id="puntos"><span><b></b></span><span><b></b></span><span><b></b></span><span><b></b></span></div>
+  </div>
+</section>
+
+<section class="catalogo" id="productos">
+  <h2>Más regalos con tu marca</h2>
+  <div class="chips"><span>Destacados</span><span>Kits</span><span>Termos y vasos</span><span>Bolígrafos</span><span>Cuadernos</span><span>Escritorio</span><span>Hogar</span><span>Llaveros</span><span>Bolsos</span></div>
+  <div class="grid" id="grid"></div>
+</section>
+<footer>Vialmedia · Agencia de publicidad · Loja, Ecuador</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module" src="assets/c4.js"></script>
+</body></html>
+
+
+
+
+
